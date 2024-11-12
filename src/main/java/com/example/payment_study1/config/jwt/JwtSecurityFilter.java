@@ -1,6 +1,9 @@
 package com.example.payment_study1.config.jwt;
 
 import com.example.payment_study1.domain.auth.AuthUser;
+import com.example.payment_study1.domain.exception.CustomLogicException;
+import com.example.payment_study1.domain.exception.ExceptionCode;
+import com.example.payment_study1.domain.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -25,6 +28,7 @@ import java.io.IOException;
 public class JwtSecurityFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private UserRole userRole;
 
     @Override
     protected void doFilterInternal(
@@ -44,10 +48,11 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
                 Long userId = Long.parseLong(claims.getSubject());
                 String name = claims.get("name",String.class);
                 String email = claims.get("email", String.class);
+                UserRole userRole = UserRole.of(claims.get("role", String.class));
 
                 // 인증
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                    AuthUser authUser = new AuthUser(userId, name, email);
+                    AuthUser authUser = new AuthUser(userId, name, email, userRole);
 
                     JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(authUser);
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
@@ -56,11 +61,11 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
 
                 // 예외 처리
             } catch (SecurityException | MalformedJwtException e) {
-                throw new OhapjijoleException(ErrorCode._UNAUTHORIZED_INVALID_TOKEN);
+                throw new CustomLogicException(ExceptionCode._UNAUTHORIZED_INVALID_TOKEN);
             } catch (ExpiredJwtException e) {
-                throw new OhapjijoleException(ErrorCode._UNAUTHORIZED_EXPIRED_TOKEN);
+                throw new CustomLogicException(ExceptionCode._UNAUTHORIZED_EXPIRED_TOKEN);
             } catch (UnsupportedJwtException e) {
-                throw new OhapjijoleException(ErrorCode._BAD_REQUEST_UNSUPPORTED_TOKEN);
+                throw new CustomLogicException(ExceptionCode._BAD_REQUEST_UNSUPPORTED_TOKEN);
             }
         }
         chain.doFilter(httpRequest, httpResponse);

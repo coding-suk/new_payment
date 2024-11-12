@@ -2,12 +2,13 @@ package com.example.payment_study1.config.jwt;
 
 import com.example.payment_study1.domain.exception.CustomLogicException;
 import com.example.payment_study1.domain.exception.ExceptionCode;
+import com.example.payment_study1.domain.user.entity.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -33,7 +34,7 @@ public class JwtUtil {
     }
 
     // 토큰생성
-    public String createToken(Long userId, String email,String name) {
+    public String createToken(Long userId, String email, String name, UserRole role) {
         Date date = new Date();
 
         // 토큰에 BEARER 추가해서 반환, 총 7자
@@ -42,6 +43,7 @@ public class JwtUtil {
                         .setSubject(String.valueOf(userId))
                         .claim("email", email)
                         .claim("name", name)
+                        .claim("role", role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 토큰 만료기간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리짐

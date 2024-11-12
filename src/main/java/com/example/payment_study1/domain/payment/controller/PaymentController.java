@@ -26,7 +26,7 @@ public class PaymentController {
     public ResponseEntity requestTossPayment(@AuthenticationPrincipal User principal,
                                              @RequestBody @Valid PaymentRequestDto requestDto) {
         PaymentResponseDto paymentResponseDto = paymentService.requestTossPayment(requestDto.toEntity(),
-                principal.getUsername()).toPaymentResponseDto();
+                principal.getName()).toPaymentResponseDto();
 
         paymentResponseDto.setSuccessUrl(requestDto.getYourSuccessUrl() == null ? paymentsConfig.getSuccessUrl() : requestDto.getYourSuccessUrl());
         paymentResponseDto.setFailUrl(requestDto.getYourFailUrl() == null ? paymentsConfig.getFailUrl() : requestDto.getYourFailUrl());

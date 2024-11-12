@@ -1,9 +1,10 @@
 package com.example.payment_study1.domain.auth.controller;
 
 
-import com.sparta.final_project.domain.auth.dto.request.SigninRequestDto;
-import com.sparta.final_project.domain.auth.dto.request.SignupRequestDto;
-import com.sparta.final_project.domain.auth.service.AuthService;
+
+import com.example.payment_study1.domain.auth.dto.SigninRequestDto;
+import com.example.payment_study1.domain.auth.dto.SignupRequestDto;
+import com.example.payment_study1.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
